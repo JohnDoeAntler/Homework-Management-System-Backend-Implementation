@@ -10,7 +10,6 @@ import { CourseModule } from './course/course.module';
 import { BackupModule } from './backup/backup.module';
 import { SubmissionModule } from './submission/submission.module';
 import { AssignmentModule } from './assignment/assignment.module';
-import { FinalSubmissionModule } from './final-submission/final-submission.module';
 import { SemesterModule } from './semester/semester.module';
 
 @Module({
@@ -45,7 +44,6 @@ import { SemesterModule } from './semester/semester.module';
     // attempt
     BackupModule,
     SubmissionModule,
-    FinalSubmissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,7 +8,6 @@ export type AttemptDocument = Attempt & Document;
 export enum AttemptType {
 	BACKUP,
 	SUBMISSION,
-	FINAL_SUBMISSION,
 }
 
 @Schema({ timestamps: true, versionKey: false, discriminatorKey: 'kind' })
