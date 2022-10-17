@@ -32,6 +32,16 @@
 $ npm install
 ```
 
+## DOTENV configuration
+
+```conf
+MONGO_ROOT_USERNAME=apas_username
+MONGO_ROOT_PASSWORD=apas_password
+MONGO_HOSTNAME=localhost
+MONGO_PORT=27017
+MONGO_DATABASE=apas
+```
+
 ## Running the app
 
 ```bash
