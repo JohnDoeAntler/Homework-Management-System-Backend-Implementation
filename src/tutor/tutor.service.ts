@@ -12,24 +12,28 @@ export class TutorService {
   ) { }
 
   async create(createTutorDto: CreateTutorDto) {
-    const tmp = new this.tutorModel(createTutorDto);
+    const tmp = new this.tutorModel({
+      ...createTutorDto,
+      kind: Tutor.name,
+      isActive: true,
+    });
     await tmp.validate();
     return (await tmp.save()).toJSON<LeanDocument<TutorDocument>>();
   }
 
   async findAll() {
-    return await this.tutorModel.find();
+    return await this.tutorModel.find({ isActive: true }).lean();
   }
 
   async findOne(id: ObjectId) {
-    return await this.tutorModel.findById(id);
+    return await this.tutorModel.findById(id).lean();
   }
 
   async update(id: ObjectId, updateTutorDto: UpdateTutorDto) {
-    return await this.tutorModel.findByIdAndUpdate(id, updateTutorDto);
+    return await this.tutorModel.findByIdAndUpdate(id, updateTutorDto, { new: true }).lean();
   }
 
   async remove(id: ObjectId) {
-    return await this.tutorModel.findByIdAndDelete(id);
+    return await this.tutorModel.findByIdAndUpdate(id, { isActive: false }, { new: true }).lean();
   }
 }

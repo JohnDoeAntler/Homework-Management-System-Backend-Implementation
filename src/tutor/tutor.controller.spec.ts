@@ -1,8 +1,8 @@
 import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { rootMongooseTestModule } from 'src/root-mongoose-test-module';
-import { TutorSchema } from 'src/schemas/tutor.schema';
-import { Tutor } from './entities/tutor.entity';
+import { Tutor, TutorSchema } from 'src/schemas/tutor.schema';
+import { User, UserSchema } from 'src/schemas/user.schema';
 import { TutorController } from './tutor.controller';
 import { TutorService } from './tutor.service';
 
@@ -13,7 +13,14 @@ describe('TutorController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         rootMongooseTestModule(),
-        MongooseModule.forFeature([{ name: Tutor.name, schema: TutorSchema }]),
+        MongooseModule.forFeature([{
+          name: User.name,
+          schema: UserSchema,
+          discriminators: [{
+            name: Tutor.name,
+            schema: TutorSchema,
+          }]
+        }]),
       ],
       controllers: [TutorController],
       providers: [TutorService],
