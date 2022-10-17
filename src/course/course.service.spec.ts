@@ -1,13 +1,12 @@
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserType } from 'src/schemas/user.schema';
-import { TutorModule } from 'src/tutor/tutor.module';
-import { TutorService } from 'src/tutor/tutor.service';
+import { Tutor } from '../schemas/tutor.schema';
+import { TutorModule } from '../tutor/tutor.module';
+import { TutorService } from '../tutor/tutor.service';
 import { closeInMongodConnection, randstr, rootMongooseTestModule } from '../root-mongoose-test-module';
-import { CourseSchema } from '../schemas/course.schema';
+import { Course, CourseSchema } from '../schemas/course.schema';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { Course } from './entities/course.entity';
 
 describe('CourseService', () => {
   let courseService: CourseService;
@@ -33,13 +32,12 @@ describe('CourseService', () => {
 
   const createCourse = async (props?: Omit<CreateCourseDto, "createdBy" | "updatedBy"> & Pick<Partial<CreateCourseDto>, "createdBy" | "updatedBy">) => {
     const tutor = await tutorService.create({
-      kind: UserType.TUTOR,
       username: randstr(),
       password: randstr(),
       email: `${randstr()}@gmail.com`,
       nickname: randstr(),
       altEmails: [],
-      isActive: true,
+      courses: [],
     });
 
     return {
@@ -78,7 +76,7 @@ describe('CourseService', () => {
     const query = await courseService.findAll();
 
     expect(query).toBeDefined();
-    expect(query.some(e => e.equals(course)));
+    expect(query.some(e => e._id == course._id));
   });
 
   it('should be able to query course (single)', async () => {
@@ -119,7 +117,7 @@ describe('CourseService', () => {
     expect(query).toBeNull();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await closeInMongodConnection();
   });
 });
