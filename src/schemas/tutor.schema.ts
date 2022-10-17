@@ -1,14 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Semester } from './semester.schema';
-import { UserType } from './user.schema';
 
 export type TutorDocument = Tutor & Document;
 
 @Schema()
 export class Tutor {
 
-	kind: UserType.TUTOR;
+	kind: string;
 	username: string;
 	password: string;
 	email: string;
@@ -18,7 +17,7 @@ export class Tutor {
 
 	@Prop({ required: true, type: [{
 		type: Types.ObjectId,
-		ref: Semester.name
+		ref: Semester.name,
 	}] })
 	courses: Types.ObjectId[] | Semester[];
 

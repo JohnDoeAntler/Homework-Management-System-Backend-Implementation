@@ -32,6 +32,9 @@ export class Assignment {
 	@Prop({ required: false, select: false })
 	semanticRules: string;
 
+	@Prop({ required: true, default: true })
+	isActive: boolean;
+
 	@Prop({ type: Types.ObjectId, ref: User.name, required: true, immutable: true })
 	createdBy: Types.ObjectId | User;
 

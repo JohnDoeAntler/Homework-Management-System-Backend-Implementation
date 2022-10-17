@@ -6,6 +6,7 @@ import { User } from './user.schema';
 
 export type SemesterDocument = Semester & Document;
 
+@Schema()
 export class ScheduledAssignment {
 
 	@Prop({
@@ -45,6 +46,16 @@ export class Semester {
 		required: true,
 	}] })
 	students: Types.ObjectId[] | User[];
+
+	// isVisible: true -> enrolled student could see
+	// isVisible: false -> enrolled student could not see, tutor could
+	@Prop({ required: true, default: true })
+	isVisible: boolean;
+
+	// isActive: true -> all could see
+	// isActive: false -> all could not see, need sysadmin manually activate
+	@Prop({ required: true, default: true })
+	isActive: boolean;
 
 	@Prop({ required: true, type: [ScheduledAssignmentSchema] })
 	assignments: ScheduledAssignment[];

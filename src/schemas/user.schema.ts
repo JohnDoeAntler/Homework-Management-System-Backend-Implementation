@@ -3,17 +3,19 @@ import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
-export enum UserType {
-	STUDENT,
-	TUTOR,
-	SYSADMIN,
-}
-
-@Schema({ timestamps: true, versionKey: false, discriminatorKey: 'kind' })
+@Schema({ timestamps: true, discriminatorKey: 'kind' })
 export class User {
 
-	@Prop({ required: true, type: Object.values(UserType) })
-	kind: UserType;
+	@Prop({
+		type: String,
+		required: true,
+		enum: [
+			'Student',
+			'Tutor',
+			'SysAdmin',
+		],
+	})
+	kind: string;
 
 	@Prop({ required: true, select: false })
 	username: string;
@@ -30,7 +32,7 @@ export class User {
 	@Prop({ type: [String] })
 	altEmails: string[];
 
-	@Prop({ required: true, default: true })
+	@Prop({ required: true, default: true, select: false })
 	isActive: boolean;
 
 }

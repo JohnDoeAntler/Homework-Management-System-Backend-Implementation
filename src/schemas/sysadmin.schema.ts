@@ -1,13 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { UserType } from './user.schema';
 
 export type SysAdminDocument = SysAdmin & Document;
 
 @Schema()
 export class SysAdmin {
 
-	kind: UserType.STUDENT;
+	kind: string;
 	username: string;
 	password: string;
 	email: string;

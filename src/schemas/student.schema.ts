@@ -1,14 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Semester } from './semester.schema';
-import { UserType } from './user.schema';
 
 export type StudentDocument = Student & Document;
 
 @Schema()
 export class Student {
 
-	kind: UserType.STUDENT;
+	kind: string;
 	username: string;
 	password: string;
 	email: string;
