@@ -1,4 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ObjectId } from 'mongoose';
+import { ParseObjectIdPipePipe } from 'src/parse-object-id-pipe.pipe';
 import { AssignmentService } from './assignment.service';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
@@ -18,17 +20,17 @@ export class AssignmentController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.assignmentService.findOne(+id);
+  findOne(@Param('id', ParseObjectIdPipePipe) id: ObjectId) {
+    return this.assignmentService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAssignmentDto: UpdateAssignmentDto) {
-    return this.assignmentService.update(+id, updateAssignmentDto);
+  update(@Param('id', ParseObjectIdPipePipe) id: ObjectId, @Body() updateAssignmentDto: UpdateAssignmentDto) {
+    return this.assignmentService.update(id, updateAssignmentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.assignmentService.remove(+id);
+  remove(@Param('id', ParseObjectIdPipePipe) id: ObjectId) {
+    return this.assignmentService.remove(id);
   }
 }

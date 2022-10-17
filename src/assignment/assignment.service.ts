@@ -1,26 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { LeanDocument, Model, ObjectId } from 'mongoose';
+import { Assignment, AssignmentDocument } from 'src/schemas/assignment.schema';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 
 @Injectable()
 export class AssignmentService {
-  create(createAssignmentDto: CreateAssignmentDto) {
-    return 'This action adds a new assignment';
+  constructor(
+    @InjectModel(Assignment.name) private assignmentModel: Model<AssignmentDocument>,
+  ) {}
+
+  async create(createAssignmentDto: CreateAssignmentDto) {
+    const tmp = new this.assignmentModel(createAssignmentDto);
+    await tmp.validate();
+    return (await tmp.save()).toJSON<LeanDocument<AssignmentDocument>>();
   }
 
-  findAll() {
-    return `This action returns all assignment`;
+  async findAll() {
+    return await this.assignmentModel.find().lean();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} assignment`;
+  async findOne(id: ObjectId) {
+    return await this.assignmentModel.findById(id).lean();
   }
 
-  update(id: number, updateAssignmentDto: UpdateAssignmentDto) {
-    return `This action updates a #${id} assignment`;
+  async update(id: ObjectId, updateAssignmentDto: UpdateAssignmentDto) {
+    return await this.assignmentModel.findByIdAndUpdate(id, updateAssignmentDto, { new: true }).lean();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} assignment`;
+  async remove(id: ObjectId) {
+    return await this.assignmentModel.findByIdAndUpdate(id, { isActive: false }, { new: true }).lean();
   }
 }
