@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { LeanDocument, Model, ObjectId } from 'mongoose';
+import { Submission, SubmissionDocument } from 'src/schemas/submission.schema';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { UpdateSubmissionDto } from './dto/update-submission.dto';
 
 @Injectable()
 export class SubmissionService {
-  create(createSubmissionDto: CreateSubmissionDto) {
-    return 'This action adds a new submission';
+  constructor(
+    @InjectModel(Submission.name) private submissionModel: Model<SubmissionDocument>,
+  ) { }
+
+  async create(createSubmissionDto: CreateSubmissionDto) {
+    const tmp = new this.submissionModel(createSubmissionDto);
+    await tmp.validate();
+    return (await tmp.save()).toJSON<LeanDocument<SubmissionDocument>>();
   }
 
-  findAll() {
-    return `This action returns all submission`;
+  async findAll() {
+    return await this.submissionModel.find().lean();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} submission`;
+  async findOne(id: ObjectId) {
+    return await this.submissionModel.findById(id).lean();
   }
 
-  update(id: number, updateSubmissionDto: UpdateSubmissionDto) {
-    return `This action updates a #${id} submission`;
+  async update(id: ObjectId, updateSubmissionDto: UpdateSubmissionDto) {
+    // TODO: could not perform update if obj.isFinal is true
+    return await this.submissionModel.findByIdAndUpdate(id, updateSubmissionDto, { new: true }).lean();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} submission`;
+  async remove(id: ObjectId) {
+    // TODO: could not perform update if obj.isFinal is true
+    return await this.submissionModel.findByIdAndDelete(id).lean();
   }
 }

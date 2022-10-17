@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SubmissionService } from './submission.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { UpdateSubmissionDto } from './dto/update-submission.dto';
+import { ParseObjectIdPipePipe } from 'src/parse-object-id-pipe.pipe';
+import { ObjectId } from 'mongoose';
 
 @Controller('submission')
 export class SubmissionController {
@@ -18,17 +20,17 @@ export class SubmissionController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.submissionService.findOne(+id);
+  findOne(@Param('id', ParseObjectIdPipePipe) id: ObjectId) {
+    return this.submissionService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubmissionDto: UpdateSubmissionDto) {
-    return this.submissionService.update(+id, updateSubmissionDto);
+  update(@Param('id', ParseObjectIdPipePipe) id: ObjectId, @Body() updateSubmissionDto: UpdateSubmissionDto) {
+    return this.submissionService.update(id, updateSubmissionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.submissionService.remove(+id);
+  remove(@Param('id', ParseObjectIdPipePipe) id: ObjectId) {
+    return this.submissionService.remove(id);
   }
 }
