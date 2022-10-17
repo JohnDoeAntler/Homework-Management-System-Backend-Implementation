@@ -1,26 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { LeanDocument, Model, ObjectId } from 'mongoose';
+import { Backup, BackupDocument } from 'src/schemas/backup.schema';
 import { CreateBackupDto } from './dto/create-backup.dto';
 import { UpdateBackupDto } from './dto/update-backup.dto';
 
 @Injectable()
 export class BackupService {
-  create(createBackupDto: CreateBackupDto) {
-    return 'This action adds a new backup';
+  constructor(
+    @InjectModel(Backup.name) private backupModel: Model<BackupDocument>,
+  ) {}
+
+  async create(createBackupDto: CreateBackupDto) {
+    const tmp = new this.backupModel(createBackupDto);
+    await tmp.validate();
+    return (await tmp.save()).toJSON<LeanDocument<BackupDocument>>();
   }
 
-  findAll() {
-    return `This action returns all backup`;
+  async findAll() {
+    return await this.backupModel.find().lean();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} backup`;
+  async findOne(id: ObjectId) {
+    return await this.backupModel.findById(id).lean();
   }
 
-  update(id: number, updateBackupDto: UpdateBackupDto) {
-    return `This action updates a #${id} backup`;
+  async update(id: ObjectId, updateBackupDto: UpdateBackupDto) {
+    return await this.backupModel.findByIdAndUpdate(id, updateBackupDto, { new: true }).lean();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} backup`;
+  async remove(id: ObjectId) {
+    return await this.backupModel.findByIdAndDelete(id).lean();
   }
 }
