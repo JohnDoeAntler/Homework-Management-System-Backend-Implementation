@@ -1,26 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { LeanDocument, Model, ObjectId } from 'mongoose';
+import { Semester, SemesterDocument } from 'src/schemas/semester.schema';
 import { CreateSemesterDto } from './dto/create-semester.dto';
 import { UpdateSemesterDto } from './dto/update-semester.dto';
 
 @Injectable()
 export class SemesterService {
-  create(createSemesterDto: CreateSemesterDto) {
-    return 'This action adds a new semester';
+  constructor(
+    @InjectModel(Semester.name) private semesterModel: Model<SemesterDocument>,
+  ) { }
+
+  async create(createSemesterDto: CreateSemesterDto) {
+    const tmp = new this.semesterModel(createSemesterDto);
+    await tmp.validate();
+    return (await tmp.save()).toJSON<LeanDocument<SemesterDocument>>();
   }
 
-  findAll() {
-    return `This action returns all semester`;
+  async findAll() {
+    return await this.semesterModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} semester`;
+  async findOne(id: ObjectId) {
+    return await this.semesterModel.findById(id);
   }
 
-  update(id: number, updateSemesterDto: UpdateSemesterDto) {
-    return `This action updates a #${id} semester`;
+  async update(id: ObjectId, updateSemesterDto: UpdateSemesterDto) {
+    return await this.semesterModel.findByIdAndUpdate(id, updateSemesterDto, { new: true });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} semester`;
+  async remove(id: ObjectId) {
+    return await this.semesterModel.findByIdAndUpdate(id, { isActive: false }, { new: true });
   }
 }
